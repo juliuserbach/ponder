@@ -1,0 +1,25 @@
+diff --git a/reward_server/gen_eval.py b/reward_server/gen_eval.py
+index 2cd8693..8ff17fe 100644
+--- a/reward_server/gen_eval.py
++++ b/reward_server/gen_eval.py
+@@ -21,8 +21,8 @@ from clip_benchmark.metrics import zeroshot_classification as zsc
+ zsc.tqdm = lambda it, *args, **kwargs: it
+ 
+ DEVICE = "cuda"
+-MY_CONFIG_PATH="your_mmdetection_path/mmdetection/configs/mask2former/mask2former_swin-s-p4-w7-224_lsj_8x2_50e_coco.py"
+-MY_CKPT_PATH="your_reward-server_path/reward-server/model/mask2former2"
++MY_CONFIG_PATH="/opt/geneval/mmdetection/configs/mask2former/mask2former_swin-s-p4-w7-224_lsj_8x2_50e_coco.py"
++MY_CKPT_PATH="/opt/geneval/object_detector"
+ 
+ def load_geneval():
+     def timed(fn):
+@@ -264,7 +264,8 @@ def load_geneval():
+         return correct, reward, "\n".join(reason)
+ 
+     def evaluate_image(image_pils, metadatas, only_strict):
+-        results = inference_detector(object_detector, [np.array(image_pil) for image_pil in image_pils])
++        # MMDetection expects BGR arrays, as official GenEval loads them from files.
++        results = inference_detector(object_detector, [np.array(image_pil)[..., ::-1].copy() for image_pil in image_pils])
+         ret = []
+         for result, image_pil, metadata in zip(results, image_pils, metadatas):
+             bbox = result[0] if isinstance(result, tuple) else result

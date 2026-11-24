@@ -1,0 +1,13 @@
+__pycache__/
+*.egg-info/
+# Local development files.
+dev/
+# Weights and outputs are hosted separately.
+checkpoints/
+data/
+external/
+runs/
+outputs/
+*.pt
+*.pth
+*.npz

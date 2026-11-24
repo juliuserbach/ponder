@@ -1,0 +1,26 @@
+# PONDER policy for MAR-B on ImageNet 256 with the FIDgrad reward
+# (paper: policy at update 11,000, selected by 50k-sample FID every 500 updates).
+# 128 groups x 8 trajectories per update, 32 per microbatch on 8 GPUs.
+task: mar
+seed: 42
+updates: 50000
+groups_per_update: 128
+group_size: 8
+microbatch: 32
+save_every: 500
+advantage_threshold: 1.0e-5
+gradient_clip: 1.0
+learning_rate: {initial: 2.0e-5, final: 2.0e-6, hold: 2000, decay: 2000}
+entropy: {initial: 0.0, final: 0.0, decay: 0}
+adam: {betas: [0.9, 0.95], eps: 1.0e-8}
+policy: {input_width: 784, width: 768, depth: 6, heads: 8, feedforward_width: 3072, action_heads: 7}
+
+mar:
+  removals: 8  # rethinking budget R, with the 64-round cosine schedule
+  noise_capacity: 8
+  ema_decay: 0.001  # FIDgrad moment EMA
+  source: external/mar  # LTH14/mar at c6d53f7
+  fd_loss: external/FD-Loss  # Jiawei-Yang/FD-Loss at 5c03b81, with data/fid_stats
+  model: checkpoints/mar/checkpoint-last.pth  # MAR-B
+  vae: checkpoints/mar/kl16.ckpt
+  fidgrad_init: checkpoints/mar_fidgrad_init.npz  # scripts/build_fidgrad_init.py

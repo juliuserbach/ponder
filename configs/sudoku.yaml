@@ -1,0 +1,26 @@
+# PONDER policy for the MNIST-Sudoku MAR (paper: policy at update 47,000).
+# Trained on 2 GPUs: 128 groups x 16 trajectories per update, 512 per microbatch.
+task: sudoku
+seed: 42
+updates: 50000
+groups_per_update: 128
+group_size: 16
+microbatch: 512
+save_every: 1000
+advantage_threshold: 1.0e-5
+gradient_clip: 1.0
+learning_rate: {initial: 2.0e-5, final: 2.0e-5, hold: 0, decay: 0}
+entropy: {initial: 0.0, final: 0.0, decay: 0}
+adam: {betas: [0.9, 0.95], eps: 1.0e-8}
+policy: {input_width: 288, width: 256, depth: 2, heads: 4, feedforward_width: 1024, action_heads: 2}
+
+sudoku:
+  # Rethinking budget R. Every update draws one clue count (triangular, weights
+  # 81..1 for 0..80 clues) and one round count, uniform between packing two
+  # decisions per round as far as possible and one decision per round.
+  removals: 9
+  generator: checkpoints/sudoku_generator.pt
+  vae: checkpoints/sudoku_vae.pt
+  classifier: checkpoints/sudoku_classifier.pt
+  boards: data/sudoku_boards.npy
+  glyphs: data/sudoku_glyphs.npy
