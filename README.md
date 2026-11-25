@@ -293,7 +293,7 @@ class Task:
 
 ```bibtex
 @article{erbach2026ponder,
-  title   = {{PONDER}: Learning to Generate in the Right Order},
+  title   = {Learning to Generate in the Right Order},
   author  = {Erbach, Julius and Narnhofer, Dominik and Schiele, Bernt and Lenssen, Jan Eric and Schindler, Konrad},
   journal = {arXiv preprint arXiv:2610.23531},
   year    = {2026}
